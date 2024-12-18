@@ -1,25 +1,24 @@
 import React, { useEffect, useMemo, useState } from "react";
-import AddApp from "modules/clarohub/components/AddApp";
+import AddUsuario from "modules/hub/components/AddUsuario";
 import { TabelaPadrao } from "modules/shared/components/TabelaPadrao";
-import Container from "modules/shared/components/ui/container";
+import UserBadge from "modules/hub/components/UserBadge";
 import axiosInstance from "services/axios";
-import UserBadge from "../components/UserBadge";
+import Container from "modules/shared/components/ui/container";
 import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
 import { Button } from "modules/shared/components/ui/button";
 import { CirclePlusIcon } from "lucide-react";
+import { Avatar, AvatarImage } from "modules/shared/components/ui/avatar";
 
-function AppAdmin() {
+function Users() {
   const [dados, setDados] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [currentItem, setCurrentItem] = useState({
-    nome: "",
-    imagemUrl: "",
-    logoCard: "",
-    logoList: "",
-    rota: "",
-    familia: "",
-    acesso: "",
+    LOGIN: "",
+    AVATAR: "",
+    NOME: "",
+    GESTOR: "",
+    PERMISSOES: "",
   });
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -29,7 +28,7 @@ function AppAdmin() {
 
   const fetchDados = async () => {
     try {
-      const response = await axiosInstance.get(`/apps`);
+      const response = await axiosInstance.get(`/users`);
       setDados(response.data);
     } catch (error) {
       console.error("Erro ao buscar dados do backend:", error);
@@ -37,51 +36,42 @@ function AppAdmin() {
   };
 
   const handleEditClick = (item) => {
-    setCurrentItem({ ...item });
+    setCurrentItem(item);
     setIsEditMode(true);
     setShowEditModal(true);
   };
 
   const handleAddClick = () => {
     setCurrentItem({
-      nome: "",
-      imagemUrl: "",
-      logoCard: "",
-      logoList: "",
-      rota: "",
-      familia: "",
-      acesso: "",
+      LOGIN: "",
+      NOME: "",
+      GESTOR: "",
+      PERMISSOES: "",
     });
     setIsEditMode(false);
     setShowEditModal(true);
-  };
-
-  const handleDeleteClick = (item) => {
-    setCurrentItem({ ...item });
-    setShowDeleteModal(true);
   };
 
   const handleCloseModal = () => {
     setShowEditModal(false);
   };
 
+  const handleDeleteClick = (item) => {
+    setCurrentItem(item);
+    setShowDeleteModal(true);
+  };
+
   const handleChange = (e) => {
-    const { name, value } = e.target ? e.target : { name: e, value: e };
-    setCurrentItem((prevItem) => ({
-      ...prevItem,
-      [name]: value,
-    }));
+    const { name, value } = e.target;
+    setCurrentItem((prevItem) => ({ ...prevItem, [name]: value }));
   };
 
   const handleSave = async () => {
     try {
-      const dataToSend = { ...currentItem };
-      delete dataToSend._id;
-
       if (isEditMode) {
-        await axiosInstance.put(`/apps/${currentItem._id}`, dataToSend);
+        await axiosInstance.put(`/users/${currentItem._id}`, currentItem);
       } else {
-        await axiosInstance.post(`/apps`, dataToSend);
+        await axiosInstance.post(`/users`, currentItem);
       }
       setShowEditModal(false);
       fetchDados();
@@ -92,7 +82,7 @@ function AppAdmin() {
 
   const handleDeleteConfirm = async () => {
     try {
-      await axiosInstance.delete(`/apps/${currentItem._id}`);
+      await axiosInstance.delete(`/users/${currentItem._id}`);
       setShowDeleteModal(false);
       fetchDados();
     } catch (error) {
@@ -103,33 +93,37 @@ function AppAdmin() {
   const columns = useMemo(
     () => [
       {
-        header: "LOGO LISTA",
-        accessorKey: "logoList",
-        cell: ({ getValue }) => {
-          const imageUrl = getValue();
-          return imageUrl ? (
-            <img
-              src={`${process.env.REACT_APP_BACKEND_URL}${imageUrl}`}
-              alt="logo"
-              style={{ height: "50px" }}
-            />
-          ) : (
-            <span>Sem logo</span>
+        header: "AVATAR",
+        accessorKey: "avatar",
+        enableHiding: true,
+        cell: ({ row }) => {
+          const user = row.original;
+          return (
+            <Avatar className="h-12 w-12">
+              <AvatarImage src={user.avatar} alt={user.NOME} />
+            </Avatar>
           );
         },
       },
       {
+        header: "LOGIN",
+        accessorKey: "LOGIN",
+        enableHiding: true,
+      },
+
+      {
         header: "NOME",
-        accessorKey: "nome",
-        sorted: true,
+        accessorKey: "NOME",
+        enableHiding: true,
       },
       {
-        header: "FAMILIA",
-        accessorKey: "familia",
+        header: "GESTOR",
+        accessorKey: "GESTOR",
+        enableHiding: true,
       },
       {
         header: "ACESSO",
-        accessorKey: "acesso",
+        accessorKey: "PERMISSOES",
         cell: ({ getValue }) => {
           const permission = getValue();
           return <UserBadge permission={permission} />;
@@ -143,7 +137,7 @@ function AppAdmin() {
     <Container>
       <div className="flex justify-between">
         <h2 className="select-none text-3xl font-semibold text-foreground sm:mb-8 md:mb-10 lg:mb-12">
-          Apps Cadastrados
+          Usuários Cadastrados
         </h2>
 
         <Button variant="primary" onClick={handleAddClick}>
@@ -159,7 +153,7 @@ function AppAdmin() {
         onEdit={handleEditClick}
       />
 
-      <AddApp
+      <AddUsuario
         show={showEditModal}
         handleClose={handleCloseModal}
         handleSave={handleSave}
@@ -177,4 +171,4 @@ function AppAdmin() {
   );
 }
 
-export default AppAdmin;
+export default Users;

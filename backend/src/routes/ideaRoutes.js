@@ -7,7 +7,7 @@ const { ObjectId } = require("mongodb");
 const { Parser } = require("json2csv");
 const resetDailyCountersIfNeeded = require("../utils/resetDailyCounters");
 
-module.exports = (ideasCollection, usersCollection, pusher) => {
+module.exports = (ideasCollection, usersCollection) => {
   // Rota para obter todos os cartões
   router.get("/ideas", authenticateToken, async (req, res) => {
     try {
@@ -41,10 +41,10 @@ module.exports = (ideasCollection, usersCollection, pusher) => {
       };
 
       await ideasCollection.insertOne(newIdea);
-      pusher.trigger("claro-spark", "new-idea", {
-        card: newIdea,
-      });
-      res.status(201).json({ message: "Card criado com sucesso", idea: newIdea });
+
+      res
+        .status(201)
+        .json({ message: "Card criado com sucesso", idea: newIdea });
     } catch (error) {
       console.error("Erro ao criar ideia:", error);
       res.status(500).json({ error: "Erro ao criar card" });
@@ -53,76 +53,76 @@ module.exports = (ideasCollection, usersCollection, pusher) => {
 
   /* Rota POST para:
     - Apoiar uma ideia, adicionando o ID do usuario e aumentando a contagem de todos os sparks usados nela
-    - Adicionar a contagem ao serviço de websockets do Pusher 
     - Incrementar a contagem de sparks diários usados */
 
-    router.post("/like-idea", authenticateToken, async (req, res) => {
-      const { userId, ideaId } = req.body;
-      
-      try {
-        // Convertendo para ObjectId
-        const userObjectId = new ObjectId(userId);
-        const ideaObjectId = new ObjectId(ideaId);
-    
-        const user = await usersCollection.findOne({ _id: userObjectId });
-        const idea = await ideasCollection.findOne({ _id: ideaObjectId });
-    
-        if (!user || !idea) {
-          return res.status(404).json({ message: "Usuário ou ideia não encontrada." });
-        }
-    
-        if (idea.creator._id.equals(userObjectId)) {
-          return res.status(403).json({ message: "Você não pode apoiar sua própria ideia." });
-        }
-    
-        if (user.dailyLikesUsed >= 3) {
-          return res.status(403).json({ message: "Você já usou todos os seus sparks diários." });
-        }
-    
-        const spark = 1; // Cada clique consome 1 spark
-    
-        // Atualizar `likedBy` com sparks
-        const likedByEntry = idea.likedBy.find((entry) => entry.userId.equals(userObjectId));
-    
-        if (likedByEntry) {
-          // Incrementar sparks existentes
-          likedByEntry.sparksUsed += spark;
-        } else {
-          // Adicionar novo registro de sparks
-          idea.likedBy.push({ userId: userObjectId, sparksUsed: spark });
-        }
-    
-        // Persistir alterações na ideia
-        await ideasCollection.updateOne(
-          { _id: ideaObjectId },
-          {
-            $set: { likedBy: idea.likedBy },
-            $inc: { likesCount: spark },
-          }
-        );
-    
-        // Incrementar o contador diário de sparks do usuário
-        await usersCollection.updateOne(
-          { _id: userObjectId },
-          { $inc: { dailyLikesUsed: spark } }
-        );
-    
-        // Atualizar contagem de likes em tempo real
-        pusher.trigger("claro-spark", "update-likes", {
-          ideaId: ideaId,
-          likesCount: idea.likesCount + spark,
-        });
-    
-        return res.status(200).json({
-          message: "Spark adicionado com sucesso!",
-          likesCount: idea.likesCount + spark,
-        });
-      } catch (error) {
-        console.error("Erro ao processar sparks:", error);
-        res.status(500).json({ message: "Erro ao processar sparks." });
+  router.post("/like-idea", authenticateToken, async (req, res) => {
+    const { userId, ideaId } = req.body;
+
+    try {
+      // Convertendo para ObjectId
+      const userObjectId = new ObjectId(userId);
+      const ideaObjectId = new ObjectId(ideaId);
+
+      const user = await usersCollection.findOne({ _id: userObjectId });
+      const idea = await ideasCollection.findOne({ _id: ideaObjectId });
+
+      if (!user || !idea) {
+        return res
+          .status(404)
+          .json({ message: "Usuário ou ideia não encontrada." });
       }
-    });
-    
+
+      if (idea.creator._id.equals(userObjectId)) {
+        return res
+          .status(403)
+          .json({ message: "Você não pode apoiar sua própria ideia." });
+      }
+
+      if (user.dailyLikesUsed >= 3) {
+        return res
+          .status(403)
+          .json({ message: "Você já usou todos os seus sparks diários." });
+      }
+
+      const spark = 1; // Cada clique consome 1 spark
+
+      // Atualizar `likedBy` com sparks
+      const likedByEntry = idea.likedBy.find((entry) =>
+        entry.userId.equals(userObjectId)
+      );
+
+      if (likedByEntry) {
+        // Incrementar sparks existentes
+        likedByEntry.sparksUsed += spark;
+      } else {
+        // Adicionar novo registro de sparks
+        idea.likedBy.push({ userId: userObjectId, sparksUsed: spark });
+      }
+
+      // Persistir alterações na ideia
+      await ideasCollection.updateOne(
+        { _id: ideaObjectId },
+        {
+          $set: { likedBy: idea.likedBy },
+          $inc: { likesCount: spark },
+        }
+      );
+
+      // Incrementar o contador diário de sparks do usuário
+      await usersCollection.updateOne(
+        { _id: userObjectId },
+        { $inc: { dailyLikesUsed: spark } }
+      );
+
+      return res.status(200).json({
+        message: "Spark adicionado com sucesso!",
+        likesCount: idea.likesCount + spark,
+      });
+    } catch (error) {
+      console.error("Erro ao processar sparks:", error);
+      res.status(500).json({ message: "Erro ao processar sparks." });
+    }
+  });
 
   // Rota para alterar o status da ideia
   router.patch("/ideas/:id", authenticateToken, async (req, res) => {
@@ -219,7 +219,7 @@ module.exports = (ideasCollection, usersCollection, pusher) => {
       const csv = json2csvParser.parse(formattedData);
 
       res.header("Content-Type", "text/csv; charset=utf-8");
-      res.header("Content-Disposition", "attachment; filename=clarospark_ideas.csv");
+      res.header("Content-Disposition", "attachment; filename=spark_ideas.csv");
       res.send("\uFEFF" + csv);
     } catch (err) {
       console.error("Erro ao gerar CSV:", err);

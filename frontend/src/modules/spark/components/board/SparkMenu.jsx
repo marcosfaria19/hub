@@ -8,7 +8,7 @@ import {
 import { Button } from "modules/shared/components/ui/button";
 import RankingModal from "../rankings/RankingModal";
 import { AuthContext } from "modules/shared/contexts/AuthContext";
-import { useDailyLikes } from "modules/clarospark/hooks/useDailyLikes";
+import { useDailyLikes } from "modules/spark/hooks/useDailyLikes";
 import {
   Tooltip,
   TooltipContent,
@@ -23,9 +23,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "modules/shared/components/ui/dropdown-menu";
-import { useDownloadIdeas } from "modules/clarospark/hooks/useDownloadIdeas";
-import spark from "modules/clarospark/assets/f0.png";
-import sparkw from "modules/clarospark/assets/f0w.png";
+import { useDownloadIdeas } from "modules/spark/hooks/useDownloadIdeas";
+import spark from "modules/spark/assets/f0.png";
+import sparkw from "modules/spark/assets/f0w.png";
 import { useTheme } from "modules/shared/contexts/ThemeContext";
 
 export default function SparkMenu({

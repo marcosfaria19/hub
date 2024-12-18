@@ -1,8 +1,8 @@
-import f0 from "modules/clarospark/assets/f0.png";
-import f0w from "modules/clarospark/assets/f0w.png";
-import f1 from "modules/clarospark/assets/f1.png";
-import f2 from "modules/clarospark/assets/f2.png";
-import f3 from "modules/clarospark/assets/f3.png";
+import f0 from "modules/spark/assets/f0.png";
+import f0w from "modules/spark/assets/f0w.png";
+import f1 from "modules/spark/assets/f1.png";
+import f2 from "modules/spark/assets/f2.png";
+import f3 from "modules/spark/assets/f3.png";
 
 const iconMap = [
   { threshold: 0, iconDark: f0, iconLight: f0w },

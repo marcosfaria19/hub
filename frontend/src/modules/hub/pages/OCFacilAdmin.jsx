@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import axiosInstance from "services/axios";
 import { TabelaPadrao } from "modules/shared/components/TabelaPadrao";
 import Container from "modules/shared/components/ui/container";
-import DeleteConfirmationModal from "modules/clarohub/components/DeleteConfirmationModal";
-import AddQualinet from "modules/clarohub/components/AddQualinet";
+import DeleteConfirmationModal from "modules/hub/components/DeleteConfirmationModal";
+import AddQualinet from "modules/hub/components/AddQualinet";
 
 const formatarData = (dataNumerica) => {
   const data = new Date((dataNumerica - 25569) * 86400 * 1000);

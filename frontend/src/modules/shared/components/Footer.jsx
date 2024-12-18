@@ -8,14 +8,10 @@ import {
 import { toast } from "sonner";
 
 const Footer = () => {
-  const developers = [
-    { name: "Marcos Faria", email: "marcos.faria.terceiros@claro.com.br" },
-    { name: "Fares Nunes", email: "fares.nunes@claro.com.br" },
-    {
-      name: "Jessica Pires",
-      email: "jessica.felisberto.terceiros@claro.com.br",
-    },
-  ];
+  const developer = {
+    name: "Marcos Faria",
+    email: "marcos.faria19@hotmail.com.br",
+  };
 
   const copyToClipboard = (email) => {
     navigator.clipboard
@@ -38,25 +34,20 @@ const Footer = () => {
           <p className="text-center text-sm sm:text-right md:text-base">
             Desenvolvido por:{" "}
             <TooltipProvider>
-              {developers.map((dev, index) => (
-                <React.Fragment key={dev.name}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        onClick={() => copyToClipboard(dev.email)}
-                        className="hover:text-menu-foreground focus:outline-none"
-                        aria-label={`Copiar email de ${dev.name}`}
-                      >
-                        {dev.name}
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{dev.email}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  {index < developers.length - 1 && " / "}
-                </React.Fragment>
-              ))}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => copyToClipboard(developer.email)}
+                    className="hover:text-menu-foreground focus:outline-none"
+                    aria-label={`Copiar email de ${developer.name}`}
+                  >
+                    {developer.name}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{developer.email}</p>
+                </TooltipContent>
+              </Tooltip>
             </TooltipProvider>
           </p>
         </div>

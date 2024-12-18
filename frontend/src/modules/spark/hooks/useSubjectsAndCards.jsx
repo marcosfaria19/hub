@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import Pusher from "pusher-js";
 import axiosInstance from "services/axios";
 import { useLikes } from "./useLikes";
 
@@ -88,33 +87,7 @@ export function useSubjectsAndCards() {
     };
 
     fetchSubjectsAndCards();
-
-    const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY, {
-      cluster: process.env.REACT_APP_PUSHER_CLUSTER,
-    });
-
-    const channel = pusher.subscribe("claro-spark");
-    channel.bind("new-idea", function (data) {
-      setCards((prevCards) => ({
-        ...prevCards,
-        [data.card.subject]: [
-          ...(prevCards[data.card.subject] || []),
-          data.card,
-        ],
-      }));
-    });
-
-    channel.bind("update-likes", function (data) {
-      updateCardLikes(data.ideaId, data.likesCount, data.userId, data.isLiked);
-      updateLikeCount(data.ideaId, data.likesCount);
-    });
-
-    return () => {
-      channel.unbind("new-idea");
-      channel.unbind("update-likes");
-      pusher.unsubscribe("claro-spark");
-    };
-  }, [updateCardLikes, updateLikeCount]);
+  }, []);
 
   return { subjects, sortedCards, isLoading, error };
 }

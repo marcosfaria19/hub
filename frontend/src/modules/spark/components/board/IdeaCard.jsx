@@ -24,10 +24,10 @@ import { Separator } from "modules/shared/components/ui/separator";
 import { cn } from "modules/shared/lib/utils";
 import formatUserName from "modules/shared/utils/formatUsername";
 import { AuthContext } from "modules/shared/contexts/AuthContext";
-import { useLikes } from "modules/clarospark/hooks/useLikes";
-import statusConfig from "modules/clarospark/utils/statusConfig";
-import { getLikeIcon } from "modules/clarospark/utils/getLikeIcon";
-import spark from "modules/clarospark/assets/f0.png";
+import { useLikes } from "modules/spark/hooks/useLikes";
+import statusConfig from "modules/spark/utils/statusConfig";
+import { getLikeIcon } from "modules/spark/utils/getLikeIcon";
+import spark from "modules/spark/assets/f0.png";
 import { useTheme } from "modules/shared/contexts/ThemeContext";
 
 export default function IdeaCard({

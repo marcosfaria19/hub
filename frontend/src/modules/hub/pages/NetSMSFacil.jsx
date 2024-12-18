@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "modules/shared/components/ui/select";
 import { Input } from "modules/shared/components/ui/input";
-import TabelaNetFacil from "modules/clarohub/components/TabelaNetFacil";
+import TabelaNetFacil from "modules/hub/components/TabelaNetFacil";
 import { Label } from "modules/shared/components/ui/label";
 import TabelaFechamentoSGD from "../components/TabelaFechamentoSGD";
 

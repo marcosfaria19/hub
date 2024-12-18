@@ -1,15 +1,15 @@
 import React, { useContext } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import OCQualinet from "modules/clarohub/pages/OCQualinet";
-import NetSMSFacil from "modules/clarohub/pages/NetSMSFacil";
-import Login from "modules/clarohub/pages/Login";
-import Users from "modules/clarohub/pages/Users";
-import Home from "modules/clarohub/pages/Home";
-import NetSMSFacilAdmin from "modules/clarohub/pages/NetSMSFacilAdmin";
-import OCFacilAdmin from "modules/clarohub/pages/OCFacilAdmin";
-import AppAdmin from "modules/clarohub/pages/AppAdmin";
-import Clarospark from "modules/clarospark/pages/Home";
+import OCQualinet from "modules/hub/pages/OCQualinet";
+import NetSMSFacil from "modules/hub/pages/NetSMSFacil";
+import Login from "modules/hub/pages/Login";
+import Users from "modules/hub/pages/Users";
+import Home from "modules/hub/pages/Home";
+import NetSMSFacilAdmin from "modules/hub/pages/NetSMSFacilAdmin";
+import OCFacilAdmin from "modules/hub/pages/OCFacilAdmin";
+import AppAdmin from "modules/hub/pages/AppAdmin";
+import Clarospark from "modules/spark/pages/Home";
 import { AuthContext } from "modules/shared/contexts/AuthContext";
 import PageTitle from "modules/shared/components/PageTitle";
 

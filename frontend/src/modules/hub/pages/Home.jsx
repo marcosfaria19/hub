@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import AppCard from "modules/clarohub/components/AppCard";
+import AppCard from "modules/hub/components/AppCard";
 import { jwtDecode } from "jwt-decode";
-import SublinkModal from "modules/clarohub/components/SublinkModal";
+import SublinkModal from "modules/hub/components/SublinkModal";
 import axiosInstance from "services/axios";
 import Container from "modules/shared/components/ui/container";
 import {

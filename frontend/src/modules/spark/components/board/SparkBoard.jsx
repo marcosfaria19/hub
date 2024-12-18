@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import IdeaCard from "modules/clarospark/components/board/IdeaCard";
+import IdeaCard from "modules/spark/components/board/IdeaCard";
 import { useMediaQuery } from "modules/shared/hooks/use-media-query";
 import {
   Carousel,

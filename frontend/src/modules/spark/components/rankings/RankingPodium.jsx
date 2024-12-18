@@ -1,7 +1,7 @@
 import React from "react";
-import ouro from "modules/clarospark/assets/ouro.png";
-import prata from "modules/clarospark/assets/prata.png";
-import bronze from "modules/clarospark/assets/bronze.png";
+import ouro from "modules/spark/assets/ouro.png";
+import prata from "modules/spark/assets/prata.png";
+import bronze from "modules/spark/assets/bronze.png";
 import formatUserName from "modules/shared/utils/formatUsername";
 
 const RankingPodium = ({ rank, index, scoreLabel }) => {

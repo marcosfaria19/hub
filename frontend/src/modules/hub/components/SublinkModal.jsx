@@ -15,9 +15,9 @@ import {
   SelectValue,
 } from "modules/shared/components/ui/select";
 import { Label } from "modules/shared/components/ui/label";
-import cidadesAtlas from "modules/clarohub/utils/cidadesAtlas";
-import ufVisium from "modules/clarohub/utils/ufVisium";
-import ufNuvem from "modules/clarohub/utils/ufNuvem";
+import cidadesAtlas from "modules/hub/utils/cidadesAtlas";
+import ufVisium from "modules/hub/utils/ufVisium";
+import ufNuvem from "modules/hub/utils/ufNuvem";
 import { toast } from "sonner";
 
 export default function SublinkModal({ show, handleClose, selectedApp }) {
