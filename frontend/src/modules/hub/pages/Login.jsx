@@ -1,10 +1,8 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "services/axios";
-import { Input } from "modules/shared/components/ui/input";
 import { Button } from "modules/shared/components/ui/button";
 import { Toaster, toast } from "sonner";
-
 import {
   Dialog,
   DialogContent,
@@ -14,6 +12,11 @@ import {
   DialogTitle,
 } from "modules/shared/components/ui/dialog";
 import { AuthContext } from "modules/shared/contexts/AuthContext";
+import { BsGithub, BsLinkedin } from "react-icons/bs";
+import { FaNodeJs, FaReact } from "react-icons/fa";
+import { SiMongodb, SiTailwindcss, SiTypescript } from "react-icons/si";
+import { FcGoogle } from "react-icons/fc";
+import { UserRound } from "lucide-react";
 
 function Login() {
   const { setToken } = useContext(AuthContext);
@@ -21,15 +24,6 @@ function Login() {
   const [senha, setSenha] = useState("");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const navigate = useNavigate();
-
-  const handleCredencialChange = (e) => {
-    const uppercasedValue = e.target.value.toUpperCase();
-    setCredencial(uppercasedValue);
-  };
-
-  const handleSenhaChange = (e) => {
-    setSenha(e.target.value);
-  };
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -42,8 +36,8 @@ function Login() {
 
       const token = response.data.token;
       if (typeof token === "string" && token.trim() !== "") {
-        setToken(token); // Setando token via contexto
-        navigate("/home");
+        setToken(token);
+        navigate("/projects");
       } else {
         toast.error("Erro ao obter o token de autenticação.");
       }
@@ -96,53 +90,124 @@ function Login() {
     setShowPasswordModal(false);
   };
 
+  const handleGoogleLogin = async () => {
+    // Implement Google login logic here
+    toast.info("Google login não implementado ainda");
+  };
+
+  const handleVisitorEntry = async () => {
+    try {
+      const response = await axiosInstance.post("/login", {
+        LOGIN: "Visitante",
+        senha: "visitante001",
+      });
+
+      const token = response.data.token;
+
+      if (typeof token === "string" && token.trim() !== "") {
+        setToken(token);
+        navigate("/projects");
+      } else {
+        toast.error("Erro ao realizar o login como visitante.");
+      }
+    } catch (err) {
+      console.error("Erro ao realizar o login como visitante", err);
+      toast.error(
+        "Falha ao entrar como visitante. Tente novamente mais tarde.",
+      );
+    }
+  };
+
   return (
-    <div className="flex h-screen w-full select-none flex-col overflow-hidden md:flex-row">
+    <div className="flex min-h-screen flex-col lg:flex-row">
       <Toaster />
-      <div className="login-bg relative flex flex-1 flex-col items-center justify-center bg-cover bg-center text-center text-foreground">
-        <h1 className="text-4xl font-bold">Bem vindo(a)!</h1>
-        <p className="mt-2 text-lg">
-          Por favor, insira suas credenciais para acessar.
-        </p>
-        <img
-          src="claro.png"
-          alt="Logo"
-          className="absolute bottom-4 left-4 w-1/6"
-        />
-      </div>
-      <div className="flex flex-1 flex-col items-center justify-center p-4 md:p-8">
-        <h1 className="font-poppins mb-8 text-3xl font-bold text-gray-900 md:text-5xl">
-          Claro Hub
-        </h1>
-        <form className="w-full max-w-md px-4" onSubmit={handleLoginSubmit}>
-          <h2 className="mb-8 text-2xl font-bold">Login</h2>
-          <div className="relative mb-4">
-            <Input
-              floating
-              variant="login"
-              type="text"
-              className="h-12 w-full"
-              label="Credencial"
-              value={credencial}
-              onChange={handleCredencialChange}
-              required
-            />
+      {/* Left Column - Image and Info */}
+      <div className="relative w-full lg:w-1/2">
+        <div className="login-bg absolute inset-0 bg-cover bg-center" />
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 flex flex-col justify-between p-6 text-white lg:p-12">
+          <div>
+            <h1 className="mb-2 text-3xl font-bold lg:text-5xl">
+              Marcos Faria
+            </h1>
+            <p className="mb-4 text-xl lg:text-2xl">Fullstack Developer</p>
+
+            <div className="mt-6 flex flex-wrap gap-4">
+              <FaReact className="text-2xl text-blue-500" title="React" />
+              <SiTypescript
+                className="text-2xl text-blue-600"
+                title="TypeScript"
+              />
+              <SiTailwindcss
+                className="text-2xl text-blue-400"
+                title="Tailwind CSS"
+              />
+
+              <FaNodeJs className="text-2xl text-green-500" title="Node.js" />
+              <SiMongodb className="text-2xl text-green-600" title="MongoDB" />
+            </div>
           </div>
-          <div className="relative mb-4">
-            <Input
-              floating
-              variant="login"
-              type="password"
-              className="h-12 w-full"
-              label="Senha"
-              value={senha}
-              onChange={handleSenhaChange}
-              required
-            />
+          <div className="mt-6 flex gap-4">
+            <Button asChild size="icon" variant="ghost">
+              <a
+                href="https://github.com/marcosfaria19/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white hover:text-white"
+              >
+                <BsGithub className="h-6 w-6" />
+              </a>
+            </Button>
+
+            <Button asChild size="icon" variant="ghost">
+              <a
+                href="https://linkedin.com/in/marcosfaria19"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white hover:text-white"
+              >
+                <BsLinkedin className="h-6 w-6" />
+              </a>
+            </Button>
           </div>
-          <Button className="w-full py-3">Entrar</Button>
-        </form>
+        </div>
       </div>
+
+      {/* Right Column - Login Options */}
+      <div className="flex w-full items-center justify-center bg-gray-100 p-6 lg:w-1/2 lg:p-12">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+            <h2 className="mb-2 text-3xl font-bold">
+              Bem-vindo(a) ao meu Hub de Projetos
+            </h2>
+            <p className="mb-6 text-gray-600">
+              Escolha como deseja explorar meu portfólio de aplicações fullstack
+            </p>
+          </div>
+          <div className="space-y-4">
+            <Button
+              className="h-12 w-full bg-black text-lg"
+              onClick={handleVisitorEntry}
+            >
+              <UserRound className="mr-4 h-6 w-6" />
+              Entrar como Visitante
+            </Button>
+            <Button
+              variant="outline"
+              className="h-12 w-full text-lg text-background"
+              onClick={handleGoogleLogin}
+            >
+              <FcGoogle className="mr-4 h-6 w-6" />
+              Entrar com Google
+            </Button>
+            <p className="text-center text-sm text-gray-600">
+              O login com Google demonstra a implementação de autenticação
+              OAuth, mas não é necessário para explorar os projetos.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Modal para registrar senha */}
       <Dialog open={showPasswordModal} onOpenChange={handleModalClose}>
         <DialogContent>
